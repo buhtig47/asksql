@@ -105,4 +105,4 @@ pip show asksql vanna
 
 Only `asksql` should be listed. If both are listed, run `pip uninstall vanna` and then the reinstall command above.
 
-**Something else broke?** [Open an issue](https://github.com/buhtig47/vanna/issues) with your Vanna version, your asksql version and the error.
+**Something else broke?** [Open an issue](https://github.com/buhtig47/asksql/issues) with your Vanna version, your asksql version and the error.

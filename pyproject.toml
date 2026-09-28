@@ -38,9 +38,9 @@ asksql = "vanna.servers.cli.server_runner:main"
 vanna = "vanna.servers.cli.server_runner:main"
 
 [project.urls]
-"Homepage" = "https://github.com/buhtig47/vanna"
-"Bug Tracker" = "https://github.com/buhtig47/vanna/issues"
-"Changelog" = "https://github.com/buhtig47/vanna/blob/main/CHANGELOG.md"
+"Homepage" = "https://github.com/buhtig47/asksql"
+"Bug Tracker" = "https://github.com/buhtig47/asksql/issues"
+"Changelog" = "https://github.com/buhtig47/asksql/blob/main/CHANGELOG.md"
 "Original project" = "https://github.com/vanna-ai/vanna"
 
 [project.optional-dependencies]
