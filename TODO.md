@@ -18,4 +18,5 @@ Now: 0 failed, 225 passed, 76 skipped (optional packages / API keys missing → 
 - [x] Tests needing optional packages skip instead of fail
 - [x] CI: GitHub Actions on Python 3.10–3.13 (ruff + pytest)
 - [ ] Run CI with `chromadb` + `psycopg2-binary` installed too (our supported integrations)
-- [ ] First PyPI release (`asksql`) — needs a PyPI account/token from Ayush
+- [x] Release workflow uses PyPI trusted publishing (no token)
+- [ ] Ayush: add pending publisher on PyPI → then create GitHub release v2.1.0
