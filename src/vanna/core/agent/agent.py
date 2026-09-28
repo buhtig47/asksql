@@ -980,8 +980,35 @@ class Agent:
 
                             if has_tool_error_access:
                                 yield result.ui_component
+                        elif result.metadata.get("contains_schema_details"):
+                            # Table/column listings from schema lookups are only shown to
+                            # users with the "schema_details" UI feature (vanna-ai/vanna#1105)
+                            has_schema_access = (
+                                self.config.ui_features.can_user_access_feature(
+                                    UiFeature.UI_FEATURE_SHOW_SCHEMA_DETAILS, user
+                                )
+                            )
+
+                            if (
+                                self.audit_logger
+                                and self.config.audit_config.enabled
+                                and self.config.audit_config.log_ui_feature_checks
+                            ):
+                                await self.audit_logger.log_ui_feature_access(
+                                    user=user,
+                                    feature_name=UiFeature.UI_FEATURE_SHOW_SCHEMA_DETAILS,
+                                    access_granted=has_schema_access,
+                                    required_groups=self.config.ui_features.feature_group_access.get(
+                                        UiFeature.UI_FEATURE_SHOW_SCHEMA_DETAILS, []
+                                    ),
+                                    conversation_id=conversation.id,
+                                    request_id=request_id,
+                                )
+
+                            if has_schema_access:
+                                yield result.ui_component
                         else:
-                            # Success results are always shown if they exist
+                            # Other success results are always shown if they exist
                             yield result.ui_component
 
                     # Collect tool result data

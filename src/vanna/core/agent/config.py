@@ -6,7 +6,7 @@ This module contains configuration models that control agent behavior.
 
 from typing import TYPE_CHECKING, Dict, List, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 from .._compat import StrEnum
 
@@ -20,6 +20,8 @@ class UiFeature(StrEnum):
     UI_FEATURE_SHOW_TOOL_ERROR = "tool_error"
     UI_FEATURE_SHOW_TOOL_INVOCATION_MESSAGE_IN_CHAT = "tool_invocation_message_in_chat"
     UI_FEATURE_SHOW_MEMORY_DETAILED_RESULTS = "memory_detailed_results"
+    # Results of queries that inspect the database structure (tables, columns)
+    UI_FEATURE_SHOW_SCHEMA_DETAILS = "schema_details"
 
 
 # Optional: you can also define defaults if you want a shared baseline
@@ -29,6 +31,7 @@ DEFAULT_UI_FEATURES: Dict[str, List[str]] = {
     UiFeature.UI_FEATURE_SHOW_TOOL_ERROR: ["admin"],
     UiFeature.UI_FEATURE_SHOW_TOOL_INVOCATION_MESSAGE_IN_CHAT: ["admin"],
     UiFeature.UI_FEATURE_SHOW_MEMORY_DETAILED_RESULTS: ["admin"],
+    UiFeature.UI_FEATURE_SHOW_SCHEMA_DETAILS: ["admin"],
 }
 
 
@@ -45,6 +48,19 @@ class UiFeatures(BaseModel):
         default_factory=lambda: DEFAULT_UI_FEATURES.copy(),
         description="Which groups can access UI features",
     )
+
+    @field_validator("feature_group_access")
+    @classmethod
+    def _add_new_default_features(
+        cls, value: Dict[str, List[str]]
+    ) -> Dict[str, List[str]]:
+        # Configs written before "schema_details" existed would otherwise hide it from
+        # everyone (unknown features are denied), so give it its default groups.
+        value.setdefault(
+            UiFeature.UI_FEATURE_SHOW_SCHEMA_DETAILS,
+            list(DEFAULT_UI_FEATURES[UiFeature.UI_FEATURE_SHOW_SCHEMA_DETAILS]),
+        )
+        return value
 
     def can_user_access_feature(self, feature_name: str, user: "User") -> bool:
         """Check if user can access a UI feature using same logic as tools.

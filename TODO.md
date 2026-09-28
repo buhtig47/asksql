@@ -24,7 +24,8 @@ Now: 0 failed, 225 passed, 76 skipped (optional packages / API keys missing → 
 
 ## Bugs / features
 - [x] #1103 optional human approval before saving to memory (`require_approval=True`)
-- [ ] #1105 too much process data in chat page
+- [x] #1105 schema lookup results hidden from non-admins (`schema_details` UI feature)
+- [ ] RunSqlTool treats `WITH …` / `SHOW` / `DESCRIBE` results as "rows affected" (LLM never sees the data)
 - [ ] #997 FastAPI server missing endpoints
 
 ## Launch prep

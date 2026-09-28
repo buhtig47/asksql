@@ -1,6 +1,7 @@
 """Generic SQL query execution tool with dependency injection."""
 
 from typing import Any, Dict, List, Optional, Type, cast
+import re
 import uuid
 from vanna.core.tool import Tool, ToolContext, ToolResult
 from vanna.components import (
@@ -14,6 +15,21 @@ from vanna.capabilities.sql_runner import SqlRunner, RunSqlToolArgs
 from vanna.capabilities.file_system import FileSystem
 from vanna.integrations.local import LocalFileSystem
 from vanna.utils.sql_safety import ensure_read_only_sql
+
+# Catalog tables/commands that describe the database structure rather than business data
+_SCHEMA_QUERY = re.compile(
+    r"\b(information_schema|sqlite_master|sqlite_schema|pg_catalog|pg_tables|pg_class"
+    r"|pg_attribute|sys\.(tables|columns|objects|schemas)|all_tables|user_tables"
+    r"|all_tab_columns|user_tab_columns|all_views|system\.(tables|columns)"
+    r"|duckdb_tables|duckdb_columns|table_info|pragma_\w+)\b"
+    r"|^\s*(show|describe|desc|pragma)\b",
+    re.IGNORECASE,
+)
+
+
+def is_schema_query(sql: str) -> bool:
+    """True if the query inspects database structure (tables, columns) - vanna-ai/vanna#1105."""
+    return bool(_SCHEMA_QUERY.search(sql or ""))
 
 
 class RunSqlTool(Tool[RunSqlToolArgs]):
@@ -147,6 +163,9 @@ class RunSqlTool(Tool[RunSqlToolArgs]):
                     ),
                     simple_component=SimpleTextComponent(text=result),
                 )
+
+            # The agent hides these results from users without the "schema_details" UI feature
+            metadata["contains_schema_details"] = is_schema_query(args.sql)
 
             return ToolResult(
                 success=True,

@@ -4,6 +4,9 @@ Changes in this community-maintained fork, relative to the last upstream Vanna r
 
 ## Unreleased
 
+### Security
+- **Schema lookups are hidden from business users** (vanna-ai/vanna#1105). When the LLM queries the database structure (`information_schema`, `sqlite_master`, `pg_catalog`, `SHOW TABLES`, `DESCRIBE`, …), the resulting table/column listing is no longer shown in the chat to regular users. The LLM still sees it. Only users with the new `schema_details` UI feature see it, which by default means the `admin` group. To show it to everyone again: `config.ui_features.register_feature("schema_details", [])`. Results that answer the question are shown as before.
+
 ### Added
 - **Optional human approval before saving to memory** (vanna-ai/vanna#1103). With `SaveQuestionToolArgsTool(require_approval=True)` (or legacy config `{"require_memory_approval": True}` for `LegacyVannaAdapter`), the LLM can only propose a memory: the user gets a "👍 Save to memory" button, and nothing is saved until they click it. This stops SQL that ran but returned wrong numbers from being saved and reused. Off by default. For the legacy `vn.ask()` API, use `auto_train=False` to the same effect.
 

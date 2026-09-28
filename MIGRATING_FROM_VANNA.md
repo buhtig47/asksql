@@ -80,6 +80,13 @@ Either way, connect with a database user that only has the permissions the app n
 
 **LLM-generated chart code runs in a restricted environment.** Plotly code from the LLM can use `df`, `px`, `go`, `pd` and imports from `plotly`, `pandas`, `numpy` and `math`. Code that tries anything else (other imports, file access, `os`, dunder attributes) is rejected, and you get the automatic chart instead.
 
+**Schema lookups are hidden from non-admin users (Agent API).** When the LLM looks up tables and columns (`information_schema`, `sqlite_master`, `SHOW TABLES`, …) before answering, users outside the `admin` group no longer see that listing in the chat. They still see the answer. To show it to everyone:
+
+```python
+config = AgentConfig()
+config.ui_features.register_feature("schema_details", [])  # [] = all users
+```
+
 ## Troubleshooting
 
 **`import vanna` fails or `vanna` has no `__version__` after migrating.** You probably ran `pip uninstall vanna` *after* `pip install asksql`, which deleted the shared files. Reinstall:
