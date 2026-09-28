@@ -25,7 +25,7 @@ Now: 0 failed, 225 passed, 76 skipped (optional packages / API keys missing → 
 ## Bugs / features
 - [x] #1103 optional human approval before saving to memory (`require_approval=True`)
 - [x] #1105 schema lookup results hidden from non-admins (`schema_details` UI feature)
-- [ ] RunSqlTool treats `WITH …` / `SHOW` / `DESCRIBE` results as "rows affected" (LLM never sees the data)
+- [x] RunSqlTool/SqliteRunner/PostgresRunner: `WITH …` and comment-prefixed queries returned no data; wrong rows-affected count
 - [ ] #997 FastAPI server missing endpoints
 
 ## Launch prep

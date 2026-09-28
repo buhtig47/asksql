@@ -87,11 +87,10 @@ class PostgresRunner(SqlRunner):
             # Execute the query
             cursor.execute(args.sql)
 
-            # Determine if this is a SELECT query or modification query
-            query_type = args.sql.strip().upper().split()[0]
-
-            if query_type == "SELECT":
-                # Fetch results for SELECT queries
+            # DB-API: description is set only for statements that return rows. Checking the
+            # first word missed WITH ... SELECT and queries starting with a comment.
+            if cursor.description is not None:
+                # Fetch results for queries that return rows
                 rows = cursor.fetchall()
                 if not rows:
                     # Return empty DataFrame

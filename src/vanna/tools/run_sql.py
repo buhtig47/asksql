@@ -14,7 +14,7 @@ from vanna.components import (
 from vanna.capabilities.sql_runner import SqlRunner, RunSqlToolArgs
 from vanna.capabilities.file_system import FileSystem
 from vanna.integrations.local import LocalFileSystem
-from vanna.utils.sql_safety import ensure_read_only_sql
+from vanna.utils.sql_safety import ensure_read_only_sql, sql_returns_rows
 
 # Catalog tables/commands that describe the database structure rather than business data
 _SCHEMA_QUERY = re.compile(
@@ -86,7 +86,7 @@ class RunSqlTool(Tool[RunSqlToolArgs]):
             # Determine query type
             query_type = args.sql.strip().upper().split()[0]
 
-            if query_type == "SELECT":
+            if sql_returns_rows(args.sql):
                 # Handle SELECT queries with results
                 if df.empty:
                     result = "Query executed successfully. No rows returned."
@@ -151,7 +151,11 @@ class RunSqlTool(Tool[RunSqlToolArgs]):
             else:
                 # For non-SELECT queries (INSERT, UPDATE, DELETE, etc.)
                 # The SqlRunner should return a DataFrame with affected row count
-                rows_affected = len(df) if not df.empty else 0
+                if "rows_affected" in df.columns and not df.empty:
+                    # Built-in runners report the count as a one-row DataFrame
+                    rows_affected = int(df["rows_affected"].iloc[0])
+                else:
+                    rows_affected = len(df)
                 result = (
                     f"Query executed successfully. {rows_affected} row(s) affected."
                 )

@@ -10,6 +10,11 @@ Changes in this community-maintained fork, relative to the last upstream Vanna r
 ### Added
 - **Optional human approval before saving to memory** (vanna-ai/vanna#1103). With `SaveQuestionToolArgsTool(require_approval=True)` (or legacy config `{"require_memory_approval": True}` for `LegacyVannaAdapter`), the LLM can only propose a memory: the user gets a "👍 Save to memory" button, and nothing is saved until they click it. This stops SQL that ran but returned wrong numbers from being saved and reused. Off by default. For the legacy `vn.ask()` API, use `auto_train=False` to the same effect.
 
+### Fixed
+- **Queries starting with `WITH` (CTEs) or a comment returned no data.** `RunSqlTool`, `SqliteRunner` and `PostgresRunner` decided whether a query returns rows by checking if its first word was `SELECT`. So `WITH … SELECT …` and `-- comment
+SELECT …` were treated as writes, and the LLM got "1 row(s) affected" instead of the results. The runners now use the DB-API `cursor.description`, and the tool parses the statement.
+- `RunSqlTool` reported "1 row(s) affected" for every write. It now reports the real count.
+
 ## 2.1.0 — 2026-09-28 (first asksql release)
 
 ### Security

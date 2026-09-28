@@ -82,3 +82,22 @@ def ensure_read_only_sql(sql: str) -> None:
         word = token.value.strip('`"[]').upper()
         if word in DENIED_WORDS or word.startswith(DENIED_PREFIXES):
             raise UnsafeSqlError(f"'{token.value}' is not allowed. {WRITE_SQL_HINT}")
+
+
+# Leading keywords of statements that return a result set but that sqlparse types as UNKNOWN
+_ROW_RETURNING_KEYWORDS = {"SHOW", "DESCRIBE", "DESC", "EXPLAIN", "PRAGMA", "VALUES"}
+
+
+def sql_returns_rows(sql: str) -> bool:
+    """True if `sql` returns a result set (SELECT, WITH ... SELECT, SHOW, ...).
+
+    Unlike checking the first word, this handles CTEs and leading comments.
+    """
+    statements = [s for s in sqlparse.parse(sql or "") if s.value.strip(" \t\r\n;")]
+    if not statements:
+        return False
+    statement = statements[-1]
+    if statement.get_type() == "SELECT":
+        return True
+    first = statement.token_first(skip_cm=True, skip_ws=True)
+    return first is not None and first.normalized.upper() in _ROW_RETURNING_KEYWORDS
