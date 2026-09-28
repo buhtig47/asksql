@@ -12,6 +12,7 @@ from vanna.core.llm.models import LlmResponse
 from vanna.core.registry import ToolRegistry
 from vanna.core.tool.models import ToolCall
 from vanna.core.user import RequestContext, User, UserResolver
+from vanna.integrations.local import LocalFileSystem
 from vanna.integrations.local.agent_memory import DemoAgentMemory
 from vanna.integrations.sqlite import SqliteRunner
 from vanna.tools.run_sql import RunSqlTool, is_schema_query
@@ -96,7 +97,10 @@ def _tables_shown(tmp_path, groups, ui_features=None):
 
     tools = ToolRegistry()
     tools.register_local_tool(
-        RunSqlTool(sql_runner=SqliteRunner(database_path=str(db))),
+        RunSqlTool(
+            sql_runner=SqliteRunner(database_path=str(db)),
+            file_system=LocalFileSystem(working_directory=str(tmp_path)),
+        ),
         access_groups=["user", "admin"],
     )
     config = AgentConfig(stream_responses=False)
