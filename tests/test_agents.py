@@ -52,7 +52,7 @@ def create_agent(llm_service, sql_runner):
     )
 
 
-async def test_agent_top_artist(agent, expected_artist="Iron Maiden"):
+async def check_agent_top_artist(agent, expected_artist="Iron Maiden"):
     """Common test logic for testing agent responses about top artist by sales."""
     # Create a simple request context
     request_context = RequestContext(cookies={}, headers={})
@@ -115,7 +115,7 @@ async def test_anthropic_top_artist(chinook_db):
     llm = AnthropicLlmService(api_key=api_key, model="claude-sonnet-4-5")
 
     agent = create_agent(llm, chinook_db)
-    await test_agent_top_artist(agent)
+    await check_agent_top_artist(agent)
 
 
 @pytest.mark.openai
@@ -128,7 +128,7 @@ async def test_openai_top_artist(chinook_db):
     llm = OpenAILlmService(api_key=api_key, model="gpt-5")
 
     agent = create_agent(llm, chinook_db)
-    await test_agent_top_artist(agent)
+    await check_agent_top_artist(agent)
 
 
 @pytest.mark.azureopenai
@@ -151,7 +151,7 @@ async def test_azure_openai_top_artist(chinook_db):
     )
 
     agent = create_agent(llm, chinook_db)
-    await test_agent_top_artist(agent)
+    await check_agent_top_artist(agent)
 
 
 # @pytest.mark.openai
@@ -164,7 +164,7 @@ async def test_azure_openai_top_artist(chinook_db):
 #     llm = OpenAIResponsesService(api_key=api_key, model="gpt-5")
 
 #     agent = create_agent(llm, chinook_db)
-#     await test_agent_top_artist(agent)
+#     await check_agent_top_artist(agent)
 
 
 @pytest.mark.ollama
@@ -179,7 +179,7 @@ async def test_ollama_top_artist(chinook_db):
     )
 
     agent = create_agent(llm, chinook_db)
-    await test_agent_top_artist(agent)
+    await check_agent_top_artist(agent)
 
 
 @pytest.mark.gemini
@@ -192,4 +192,4 @@ async def test_gemini_top_artist(chinook_db):
     llm = GeminiLlmService(model="gemini-2.5-pro", temperature=0.0)
 
     agent = create_agent(llm, chinook_db)
-    await test_agent_top_artist(agent)
+    await check_agent_top_artist(agent)
