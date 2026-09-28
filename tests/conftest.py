@@ -66,6 +66,56 @@ def pytest_collection_modifyitems(config, items):
                 )
 
 
+# Optional integrations: tests that need them are skipped (not failed) when not installed.
+OPTIONAL_MODULES = {
+    "chromadb",
+    "clickhouse_connect",
+    "duckdb",
+    "google",
+    "ollama",
+    "oracledb",
+    "psycopg2",
+    "pyhive",
+    "pymysql",
+    "pyodbc",
+    "snowflake",
+}
+
+
+def _is_missing_optional_dependency(exc):
+    """True if `exc` (or its cause) is vanna's "X package is required. Install with: pip install ..." error."""
+    while exc is not None:
+        if (
+            isinstance(exc, ModuleNotFoundError)
+            and (exc.name or "").split(".")[0] in OPTIONAL_MODULES
+        ):
+            return True
+        if isinstance(
+            exc, (ImportError, pytest.fail.Exception)
+        ) and "pip install" in str(exc):
+            return True
+        exc = exc.__cause__ or exc.__context__
+    return False
+
+
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    outcome = yield
+    report = outcome.get_result()
+    if (
+        report.failed
+        and call.excinfo is not None
+        and _is_missing_optional_dependency(call.excinfo.value)
+    ):
+        report.outcome = "skipped"
+        reason = str(call.excinfo.value).splitlines()[0]
+        report.longrepr = (
+            str(item.path),
+            item.location[1] or 0,
+            f"Skipped: optional dependency missing: {reason}",
+        )
+
+
 @pytest.fixture(scope="session")
 def chinook_db(tmp_path_factory):
     """
