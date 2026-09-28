@@ -1,5 +1,10 @@
 # asksql
 
+[![PyPI](https://img.shields.io/pypi/v/asksql.svg)](https://pypi.org/project/asksql/)
+[![Tests](https://github.com/buhtig47/vanna/actions/workflows/tests.yml/badge.svg)](https://github.com/buhtig47/vanna/actions/workflows/tests.yml)
+[![Python](https://img.shields.io/badge/python-3.10%E2%80%933.13-blue.svg)](https://github.com/buhtig47/vanna/actions/workflows/tests.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/buhtig47/vanna/blob/main/LICENSE)
+
 **The community-maintained, security-focused continuation of [Vanna](https://github.com/vanna-ai/vanna).**
 
 > 🚧 **Work in progress.** Vanna was archived on 29 March 2026 with ~227 open issues. asksql picks it up: security fixes first, then bug fixes and dependency updates.
@@ -11,7 +16,9 @@ pip uninstall vanna
 pip install asksql
 ```
 
-asksql keeps the `vanna` import name (like Pillow did for PIL), so `import vanna`, `from vanna import Agent` and the legacy 1.x `VannaBase` API work as before. Don't install both packages in the same environment.
+asksql keeps the `vanna` import name (like Pillow did for PIL), so `import vanna`, `from vanna import Agent` and the legacy `VannaBase` API work as before. Uninstall Vanna **before** installing asksql, because both ship the same `vanna/` folder.
+
+📘 **[Migration guide](https://github.com/buhtig47/vanna/blob/main/MIGRATING_FROM_VANNA.md)**: requirements files, coming from Vanna 0.x, behaviour changes, troubleshooting.
 
 ### What's fixed so far
 

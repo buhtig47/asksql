@@ -19,4 +19,11 @@ Now: 0 failed, 225 passed, 76 skipped (optional packages / API keys missing → 
 - [x] CI: GitHub Actions on Python 3.10–3.13 (ruff + pytest)
 - [ ] Run CI with `chromadb` + `psycopg2-binary` installed too (our supported integrations)
 - [x] Release workflow uses PyPI trusted publishing (no token)
-- [x] PyPI pending publisher added; GitHub release v2.1.0 created
+- [x] PyPI pending publisher added; GitHub release v2.1.0 created and published to PyPI
+- [x] Enable GitHub Issues on the fork
+
+## Launch prep
+- [x] MIGRATING_FROM_VANNA.md (verified: wrong uninstall order breaks install → force-reinstall fixes)
+- [x] README badges + migration guide link
+- [ ] Draft Show HN + r/selfhosted posts (Ayush approves before posting)
+- [ ] Consider: alias `vanna.openai` → `vanna.legacy.openai` etc. so Vanna 0.x imports work unchanged
