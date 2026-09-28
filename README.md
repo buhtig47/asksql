@@ -20,6 +20,8 @@ asksql keeps the `vanna` import name (like Pillow did for PIL), so `import vanna
 
 📘 **[Migration guide](https://github.com/buhtig47/vanna/blob/main/MIGRATING_FROM_VANNA.md)**: requirements files, coming from Vanna 0.x, behaviour changes, troubleshooting.
 
+🔌 **[Server API](https://github.com/buhtig47/vanna/blob/main/SERVER_API.md)**: HTTP endpoints (`/health`, `chat_poll`, `chat_sse`), request/response format, CORS.
+
 ### What's fixed so far
 
 | Issue | Fix |

@@ -2,6 +2,7 @@
 FastAPI server factory for Vanna Agents.
 """
 
+import warnings
 from typing import Any, Dict, Optional
 
 from fastapi import FastAPI
@@ -49,7 +50,18 @@ class VannaFastAPIServer:
 
             # Set sensible defaults
             cors_params.setdefault("allow_origins", ["*"])
-            cors_params.setdefault("allow_credentials", True)
+            # Wildcard origins + credentials lets ANY website send requests with the
+            # user's cookies and read the answers. Only allow credentials by default
+            # when the origins are an explicit allow-list.
+            wildcard = "*" in cors_params["allow_origins"]
+            cors_params.setdefault("allow_credentials", not wildcard)
+            if wildcard and cors_params["allow_credentials"]:
+                warnings.warn(
+                    "CORS allow_origins=['*'] with allow_credentials=True lets any website "
+                    "call this server with your users' cookies. List your frontend origins "
+                    "in config['cors']['allow_origins'] instead.",
+                    stacklevel=2,
+                )
             cors_params.setdefault("allow_methods", ["*"])
             cors_params.setdefault("allow_headers", ["*"])
 

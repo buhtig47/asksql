@@ -5,9 +5,11 @@ Changes in this community-maintained fork, relative to the last upstream Vanna r
 ## Unreleased
 
 ### Security
+- **FastAPI server no longer shares credentials with every origin.** The default CORS config was `allow_origins=["*"]` with `allow_credentials=True`, so any website a logged-in user visited could query the agent with their cookies and read the answers. Credentials are now only allowed when you list explicit origins (`config={"cors": {"allow_origins": [...]}}`). The server warns if you combine `*` with credentials yourself. Same-origin use (the built-in chat page) is unaffected. The Flask server was already safe.
 - **Schema lookups are hidden from business users** (vanna-ai/vanna#1105). When the LLM queries the database structure (`information_schema`, `sqlite_master`, `pg_catalog`, `SHOW TABLES`, `DESCRIBE`, …), the resulting table/column listing is no longer shown in the chat to regular users. The LLM still sees it. Only users with the new `schema_details` UI feature see it, which by default means the `admin` group. To show it to everyone again: `config.ui_features.register_feature("schema_details", [])`. Results that answer the question are shown as before.
 
 ### Added
+- [SERVER_API.md](SERVER_API.md): the HTTP endpoints, request/response format and CORS setup. The paths `/vanna/query` and `/vanna/health` never existed; use `/api/vanna/v2/chat_poll` and `/health` (vanna-ai/vanna#997).
 - **Optional human approval before saving to memory** (vanna-ai/vanna#1103). With `SaveQuestionToolArgsTool(require_approval=True)` (or legacy config `{"require_memory_approval": True}` for `LegacyVannaAdapter`), the LLM can only propose a memory: the user gets a "👍 Save to memory" button, and nothing is saved until they click it. This stops SQL that ran but returned wrong numbers from being saved and reused. Off by default. For the legacy `vn.ask()` API, use `auto_train=False` to the same effect.
 
 ### Fixed

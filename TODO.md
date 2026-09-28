@@ -26,7 +26,7 @@ Now: 0 failed, 225 passed, 76 skipped (optional packages / API keys missing → 
 - [x] #1103 optional human approval before saving to memory (`require_approval=True`)
 - [x] #1105 schema lookup results hidden from non-admins (`schema_details` UI feature)
 - [x] RunSqlTool/SqliteRunner/PostgresRunner: `WITH …` and comment-prefixed queries returned no data; wrong rows-affected count
-- [ ] #997 FastAPI server missing endpoints
+- [x] #997 endpoints documented in SERVER_API.md (paths never existed) + FastAPI CORS credentials fix
 
 ## Launch prep
 - [x] MIGRATING_FROM_VANNA.md (verified: wrong uninstall order breaks install → force-reinstall fixes)

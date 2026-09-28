@@ -87,6 +87,8 @@ config = AgentConfig()
 config.ui_features.register_feature("schema_details", [])  # [] = all users
 ```
 
+**FastAPI CORS no longer allows credentials from any origin.** If your frontend runs on a different origin than the server and uses cookie auth, list it: `VannaFastAPIServer(agent, config={"cors": {"allow_origins": ["https://app.example.com"]}})`. See [SERVER_API.md](SERVER_API.md#cors).
+
 ## Troubleshooting
 
 **`import vanna` fails or `vanna` has no `__version__` after migrating.** You probably ran `pip uninstall vanna` *after* `pip install asksql`, which deleted the shared files. Reinstall:
