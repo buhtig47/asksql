@@ -18,6 +18,16 @@ from .assets import css_content, html_content, js_content
 from .auth import AuthInterface, NoAuth
 
 
+def _installed_version() -> str:
+    # This fork is published as "asksql" but keeps the `vanna` import name
+    for distribution in ("asksql", "vanna"):
+        try:
+            return importlib.metadata.version(distribution)
+        except importlib.metadata.PackageNotFoundError:
+            continue
+    return "unknown"
+
+
 class Cache(ABC):
     """
     Define the interface for a cache that can be used to store data in a Flask app.
@@ -1281,7 +1291,7 @@ class VannaFlaskApp(VannaFlaskAPI):
         self.config["function_generation"] = function_generation and hasattr(
             vn, "get_function"
         )
-        self.config["version"] = importlib.metadata.version("vanna")
+        self.config["version"] = _installed_version()
 
         self.index_html_path = index_html_path
         self.assets_folder = assets_folder

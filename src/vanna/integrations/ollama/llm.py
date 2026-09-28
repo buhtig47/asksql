@@ -46,7 +46,7 @@ class OllamaLlmService(LlmService):
             import ollama
         except ImportError as e:
             raise ImportError(
-                "ollama package is required. Install with: pip install 'vanna[ollama]' or pip install ollama"
+                "ollama package is required. Install with: pip install 'asksql[ollama]' or pip install ollama"
             ) from e
 
         if not model:

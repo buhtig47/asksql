@@ -6,8 +6,8 @@
 - A fork of **vanna-ai/vanna** (open-source Text-to-SQL Python library, ~23K GitHub stars, MIT license, last version 2.0.2).
 - The original repo was **archived on 29 March 2026**. ~227 issues were left open. Users are looking for a maintained alternative.
 - **Goal:** become the maintained, lightweight, secure, Vanna-compatible successor.
-  - Hook: "Vanna users — change one import, everything keeps working."
-- Project name: `<NAME>` (not "vanna"). Keep the original MIT LICENSE and copyright line. README must credit Vanna.
+  - Hook: "Vanna users — swap the package, zero code changes."
+- Project name: **asksql** (PyPI distribution `asksql`). Import name stays `vanna` (Pillow-style drop-in: `pip uninstall vanna && pip install asksql`, zero code changes). Keep the original MIT LICENSE and copyright line. README must credit Vanna.
 
 ## Who I am and how I want to work (MOST IMPORTANT)
 **Primary goal: make this fork the maintained Vanna successor (users, stars, launch).** Learning and being part of the process is secondary — it must not slow the project down.

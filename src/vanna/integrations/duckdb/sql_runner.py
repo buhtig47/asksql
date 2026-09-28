@@ -28,7 +28,7 @@ class DuckDBRunner(SqlRunner):
             self.duckdb = duckdb
         except ImportError as e:
             raise ImportError(
-                "duckdb package is required. Install with: pip install 'vanna[duckdb]'"
+                "duckdb package is required. Install with: pip install 'asksql[duckdb]'"
             ) from e
 
         self.database_path = database_path

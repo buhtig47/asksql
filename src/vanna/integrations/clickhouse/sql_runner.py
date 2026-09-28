@@ -36,7 +36,7 @@ class ClickHouseRunner(SqlRunner):
         except ImportError as e:
             raise ImportError(
                 "clickhouse-connect package is required. "
-                "Install with: pip install 'vanna[clickhouse]'"
+                "Install with: pip install 'asksql[clickhouse]'"
             ) from e
 
         self.host = host

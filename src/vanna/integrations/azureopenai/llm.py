@@ -72,7 +72,7 @@ class AzureOpenAILlmService(LlmService):
             from openai import AzureOpenAI
         except Exception as e:  # pragma: no cover
             raise ImportError(
-                "openai package is required. Install with: pip install 'vanna[azureopenai]' "
+                "openai package is required. Install with: pip install 'asksql[azureopenai]' "
                 "or 'pip install openai'"
             ) from e
 

@@ -3,13 +3,16 @@ requires = ["flit_core >=3.2,<4"]
 build-backend = "flit_core.buildapi"
 
 [project]
-name = "vanna"
+name = "asksql"
 version = "2.0.2"
 authors = [
   { name="Zain Hoda", email="zain@vanna.ai" },
 ]
+maintainers = [
+  { name="Ayush Srivastava" },
+]
 
-description = "Generate SQL queries from natural language"
+description = "Community-maintained, security-focused fork of Vanna: generate SQL from natural language. Drop-in: keeps `import vanna`."
 readme = "README.md"
 requires-python = ">=3.9"
 classifiers = [
@@ -31,16 +34,19 @@ dependencies = [
 ]
 
 [project.scripts]
+asksql = "vanna.servers.cli.server_runner:main"
 vanna = "vanna.servers.cli.server_runner:main"
 
 [project.urls]
-"Homepage" = "https://github.com/vanna-ai/vanna"
-"Bug Tracker" = "https://github.com/vanna-ai/vanna/issues"
+"Homepage" = "https://github.com/buhtig47/vanna"
+"Bug Tracker" = "https://github.com/buhtig47/vanna/issues"
+"Changelog" = "https://github.com/buhtig47/vanna/blob/main/CHANGELOG.md"
+"Original project" = "https://github.com/vanna-ai/vanna"
 
 [project.optional-dependencies]
 flask = ["flask>=2.0.0", "flask-cors>=4.0.0"]
 fastapi = ["fastapi>=0.68.0", "uvicorn>=0.15.0"]
-servers = ["vanna[flask,fastapi]"]
+servers = ["asksql[flask,fastapi]"]
 
 postgres = ["psycopg2-binary", "db-dtypes"]
 mysql = ["PyMySQL"]

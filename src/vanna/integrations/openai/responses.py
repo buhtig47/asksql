@@ -20,7 +20,7 @@ class OpenAIResponsesService(LlmService):
             from openai.types.responses import Response
         except Exception as e:  # pragma: no cover
             raise ImportError(
-                "openai package is required. Install with: pip install 'vanna[openai]'"
+                "openai package is required. Install with: pip install 'asksql[openai]'"
             ) from e
 
         self.client = AsyncOpenAI(api_key=api_key or os.getenv("OPENAI_API_KEY"))

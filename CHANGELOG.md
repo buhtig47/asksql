@@ -16,5 +16,11 @@ Changes in this community-maintained fork, relative to the last upstream Vanna r
 
   Recommended in any case: connect with a database user that only has read permissions.
 
+### Packaging
+- Published as **`asksql`** on PyPI. The import name stays `vanna`, so migrating is `pip uninstall vanna && pip install asksql` with no code changes.
+- Extras are now `asksql[postgres]`, `asksql[openai]`, … (the old `vanna[...]` names would install upstream Vanna). Error messages updated accordingly.
+- New `asksql` CLI command (the `vanna` command still works).
+- The legacy Flask server no longer crashes looking up the version of a `vanna` distribution that isn't installed.
+
 ### Fixed
 - Test suite: `tests/test_agents.py` helper was collected as a test; Azure OpenAI tests patched the wrong import target.

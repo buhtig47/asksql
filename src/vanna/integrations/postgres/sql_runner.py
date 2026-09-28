@@ -41,7 +41,7 @@ class PostgresRunner(SqlRunner):
             self.psycopg2 = psycopg2
         except Exception as e:
             raise ImportError(
-                "psycopg2 package is required. Install with: pip install 'vanna[postgres]'"
+                "psycopg2 package is required. Install with: pip install 'asksql[postgres]'"
             ) from e
 
         if connection_string:

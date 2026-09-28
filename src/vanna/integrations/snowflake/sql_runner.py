@@ -50,7 +50,7 @@ class SnowflakeRunner(SqlRunner):
         except ImportError as e:
             raise ImportError(
                 "snowflake-connector-python package is required. "
-                "Install with: pip install 'vanna[snowflake]'"
+                "Install with: pip install 'asksql[snowflake]'"
             ) from e
 
         # Validate that at least one authentication method is provided

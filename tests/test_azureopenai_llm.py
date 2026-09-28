@@ -286,7 +286,7 @@ class TestImportError:
                 del sys.modules["vanna.integrations.azureopenai.llm"]
 
             with pytest.raises(
-                ImportError, match="pip install 'vanna\\[azureopenai\\]'"
+                ImportError, match="pip install 'asksql\\[azureopenai\\]'"
             ):
                 from vanna.integrations.azureopenai import AzureOpenAILlmService
 

@@ -27,7 +27,7 @@ class BigQueryRunner(SqlRunner):
         except ImportError as e:
             raise ImportError(
                 "google-cloud-bigquery package is required. "
-                "Install with: pip install 'vanna[bigquery]'"
+                "Install with: pip install 'asksql[bigquery]'"
             ) from e
 
         self.project_id = project_id

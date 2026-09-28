@@ -801,7 +801,7 @@ class VannaBase(ABC):
         except ImportError:
             raise DependencyError(
                 "You need to install required dependencies to execute this method, run command:"
-                " \npip install vanna[snowflake]"
+                " \npip install asksql[snowflake]"
             )
 
         if username == "my-username":
@@ -937,7 +937,7 @@ class VannaBase(ABC):
         except ImportError:
             raise DependencyError(
                 "You need to install required dependencies to execute this method,"
-                " run command: \npip install vanna[postgres]"
+                " run command: \npip install asksql[postgres]"
             )
 
         if not host:
@@ -1305,7 +1305,7 @@ class VannaBase(ABC):
         except ImportError:
             raise DependencyError(
                 "You need to install required dependencies to execute this method, run command:"
-                " \npip install vanna[bigquery]"
+                " \npip install asksql[bigquery]"
             )
 
         if not project_id:
@@ -1380,7 +1380,7 @@ class VannaBase(ABC):
         except ImportError:
             raise DependencyError(
                 "You need to install required dependencies to execute this method,"
-                " run command: \npip install vanna[duckdb]"
+                " run command: \npip install asksql[duckdb]"
             )
         # URL of the database to download
         if url == ":memory:" or url == "":

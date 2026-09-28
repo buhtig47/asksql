@@ -49,7 +49,7 @@ class GeminiLlmService(LlmService):
         except Exception as e:  # pragma: no cover
             raise ImportError(
                 "google-genai package is required. "
-                "Install with: pip install 'vanna[gemini]'"
+                "Install with: pip install 'asksql[gemini]'"
             ) from e
 
         self.model_name = model or os.getenv("GEMINI_MODEL", "gemini-2.5-pro")

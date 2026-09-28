@@ -25,7 +25,7 @@ class OracleRunner(SqlRunner):
             self.oracledb = oracledb
         except ImportError as e:
             raise ImportError(
-                "oracledb package is required. Install with: pip install 'vanna[oracle]'"
+                "oracledb package is required. Install with: pip install 'asksql[oracle]'"
             ) from e
 
         self.user = user
