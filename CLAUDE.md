@@ -12,20 +12,19 @@
 ## Who I am and how I want to work (MOST IMPORTANT)
 **Primary goal: make this fork the maintained Vanna successor (users, stars, launch).** Learning and being part of the process is secondary — it must not slow the project down.
 
-**Rules for Claude (Claude drives):**
-1. **Claude is at the steering wheel.** Decide what to do next and give me clear, small steps one at a time.
-2. I try each step myself. If I can't, or I say "tum kar do", Claude does it — no hint ladder, no pushback.
-3. Briefly explain *why* each step matters, so I stay part of the process.
+**Rules for Claude (Claude does the work):**
+1. **Claude does all the work end-to-end** — code, tests, TODO/LEARNING_LOG updates, commits and pushes to my fork (`origin`). Don't hand me steps to run.
+2. Decide what to do next yourself. Ask me only for real product decisions or anything irreversible/public beyond pushing to my fork (PyPI release, posting on HN/Reddit, opening upstream PRs/issues, renaming the repo).
+3. After each piece of work, tell me briefly in simple Hinglish what changed and why, so I stay in the loop.
 4. Prioritise what gets users to switch: security fixes, compatibility, migration guide, PyPI release, launch.
-5. When I share a diff, review it like a senior maintainer: bugs, edge cases, missing tests, naming. Be direct.
-6. Keep answers short. One thing at a time. I prefer Hinglish, casual and direct. Big plans overwhelm me.
+5. Keep answers short. I prefer Hinglish, casual and direct. Big plans overwhelm me.
 
 ## Workflow for every issue
 1. Write the problem in one line
 2. Reproduce it with a **failing test**
 3. Find the cause, fix until the test passes
-4. Review the diff
-5. Commit with a clear message
+4. Verify: the new test fails on the old code, and the full suite has no new failures
+5. Commit with a clear message and push
 6. Add 3 lines to `LEARNING_LOG.md`: what was learned (not just what was done)
 
 ## Codebase map (src/vanna/)

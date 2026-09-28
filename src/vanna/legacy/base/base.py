@@ -67,6 +67,7 @@ import sqlparse
 from ..exceptions import DependencyError, ImproperlyConfigured, ValidationError
 from ..types import TrainingPlan, TrainingPlanItem
 from ..utils import validate_config_path
+from .safe_exec import exec_plotly_code
 
 
 class VannaBase(ABC):
@@ -2090,11 +2091,9 @@ class VannaBase(ABC):
         Returns:
             plotly.graph_objs.Figure: The Plotly figure.
         """
-        ldict = {"df": df, "px": px, "go": go}
         try:
-            exec(plotly_code, globals(), ldict)
-
-            fig = ldict.get("fig", None)
+            # Never exec LLM output with this module's globals (vanna-ai/vanna#1098)
+            fig = exec_plotly_code(plotly_code, df)
         except Exception as e:
             # Inspect data types
             numeric_cols = df.select_dtypes(include=["number"]).columns.tolist()

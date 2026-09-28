@@ -1,28 +1,21 @@
 # TODO
 
 Baseline: `pytest tests/` on Python 3.13 → 41 failed, 167 passed, 47 skipped, 1 error (28-09-2026)
+Now: 29 failed (all missing optional packages), 191 passed, 47 skipped
 
-## Real bugs (fix later, one at a time)
+## Security (the fork's main selling point)
+- [x] #1121 CVE-2026-4229 — SQL injection in BigQuery `remove_training_data`
+- [x] #1098 — same BigQuery injection + unsafe `exec()` of LLM-generated Plotly code (now guarded by `legacy/base/safe_exec.py`)
+- [ ] #1078 — LLM-generated SQL is executed without any filtering (prompt injection → e.g. Oracle `DBMS_SCHEDULER` shell commands)
+- [ ] #1098 leftover — `training_data_type` interpolated into SQL in `bigquery_vector.py` `fetch_similar_training_data`
 
-FIXED
-### B. Azure OpenAI tests (12 failing)
-- File: `tests/test_azureopenai_llm.py`
-- Error: `module 'vanna.integrations.azureopenai.llm' does not have the attribute 'AzureOpenAI'`
-- My hypothesis: I think ______ causes ______
-
-FIXED
-### C. `test_agent_top_artist` error
-- File: `tests/test_agents.py:55`
-- Error: `fixture 'agent' not found`
-- My hypothesis: I think it is an import issue.
-
-#1121 CVE-2026-4229 BigQuery remove_training_data SQL injection — FIXED
+## Test fixes
+- [x] B. Azure OpenAI tests patched the wrong target (lazy import) → patch `openai.AzureOpenAI`
+- [x] C. `test_agent_top_artist` was a helper collected as a test → renamed to `check_agent_top_artist`
 
 ## Not bugs (missing optional packages)
-
-### A. ~27 tests fail with ImportError
-- ollama, chromadb, psycopg2, snowflake, mysql, duckdb, oracle, bigquery, pyodbc, pyhive
-- Our scope needs only: `chromadb`, `psycopg2-binary` → install these later
+- ~29 tests fail with ImportError: ollama, chromadb, psycopg2, snowflake, mysql, duckdb, oracle, bigquery, pyodbc, pyhive
+- Our scope needs only `chromadb` and `psycopg2-binary`
 
 ## Later
 - Tests that need an optional package should **skip**, not fail, when it is missing
