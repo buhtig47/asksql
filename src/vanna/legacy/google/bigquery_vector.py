@@ -271,10 +271,14 @@ class BigQuery_VectorStore(VannaBase):
         return self.conn.query(query).result().to_dataframe()
 
     def remove_training_data(self, id: str, **kwargs) -> bool:
-        query = f"DELETE FROM `{self.table_id}` WHERE id = '{id}'"
+        # Pass id as a query parameter, never inside the SQL string (CVE-2026-4229)
+        query = f"DELETE FROM `{self.table_id}` WHERE id = @id"
+        job_config = bigquery.QueryJobConfig(
+            query_parameters=[bigquery.ScalarQueryParameter("id", "STRING", id)]
+        )
 
         try:
-            self.conn.query(query).result()
+            self.conn.query(query, job_config=job_config).result()
             return True
 
         except Exception as e:

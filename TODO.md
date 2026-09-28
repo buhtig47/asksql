@@ -16,6 +16,8 @@ FIXED
 - Error: `fixture 'agent' not found`
 - My hypothesis: I think it is an import issue.
 
+#1121 CVE-2026-4229 BigQuery remove_training_data SQL injection — FIXED
+
 ## Not bugs (missing optional packages)
 
 ### A. ~27 tests fail with ImportError

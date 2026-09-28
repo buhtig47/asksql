@@ -10,3 +10,5 @@ Rule: 3 lines per day/issue — what I learned.
 renamed test_agent_top_artist to check_agent_top_artist so it does not get treated as a test case
 
 replaced vanna.integrations.azureopenai.llm.AzureOpenAI with openai.AzureOpenAI
+
+never use the user inputs as f-strings in SQL. Use parameterised query instead, so the input gets always treated as data and not code.   
