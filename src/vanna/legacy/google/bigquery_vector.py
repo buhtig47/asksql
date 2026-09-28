@@ -148,10 +148,17 @@ class BigQuery_VectorStore(VannaBase):
                 options => '{{"use_brute_force":true}}'
             )
         WHERE
-            base.training_data_type = '{training_data_type}'
+            base.training_data_type = @training_data_type
         """
+        job_config = bigquery.QueryJobConfig(
+            query_parameters=[
+                bigquery.ScalarQueryParameter(
+                    "training_data_type", "STRING", training_data_type
+                )
+            ]
+        )
 
-        results = self.conn.query(query).result().to_dataframe()
+        results = self.conn.query(query, job_config=job_config).result().to_dataframe()
         return results
 
     def get_embeddings(self, data: str, task: str) -> List[float]:

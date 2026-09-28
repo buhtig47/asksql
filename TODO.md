@@ -1,13 +1,13 @@
 # TODO
 
 Baseline: `pytest tests/` on Python 3.13 → 41 failed, 167 passed, 47 skipped, 1 error (28-09-2026)
-Now: 29 failed (all missing optional packages), 224 passed, 47 skipped
+Now: 29 failed (all missing optional packages), 225 passed, 47 skipped
 
 ## Security (the fork's main selling point)
 - [x] #1121 CVE-2026-4229 — SQL injection in BigQuery `remove_training_data`
 - [x] #1098 — same BigQuery injection + unsafe `exec()` of LLM-generated Plotly code (now guarded by `legacy/base/safe_exec.py`)
 - [x] #1078 — LLM-generated SQL is now read-only by default (`utils/sql_safety.py`, opt out with `allow_write_sql=True`)
-- [ ] #1098 leftover — `training_data_type` interpolated into SQL in `bigquery_vector.py` `fetch_similar_training_data`
+- [x] #1098 leftover — `training_data_type` in BigQuery `fetch_similar_training_data` now a query parameter
 
 ## Test fixes
 - [x] B. Azure OpenAI tests patched the wrong target (lazy import) → patch `openai.AzureOpenAI`
