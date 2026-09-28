@@ -48,7 +48,7 @@ class TestReasoningModelDetection:
 class TestAzureOpenAILlmServiceInitialization:
     """Test Azure OpenAI service initialization."""
 
-    @patch("vanna.integrations.azureopenai.llm.AzureOpenAI")
+    @patch("openai.AzureOpenAI")
     def test_init_with_all_params(self, mock_azure_openai):
         """Test initialization with all parameters provided."""
         service = AzureOpenAILlmService(
@@ -68,7 +68,7 @@ class TestAzureOpenAILlmServiceInitialization:
         assert call_kwargs["api_version"] == "2024-10-21"
         assert call_kwargs["api_key"] == "test-key"
 
-    @patch("vanna.integrations.azureopenai.llm.AzureOpenAI")
+    @patch("openai.AzureOpenAI")
     def test_init_with_reasoning_model(self, mock_azure_openai):
         """Test initialization with a reasoning model."""
         service = AzureOpenAILlmService(
@@ -89,7 +89,7 @@ class TestAzureOpenAILlmServiceInitialization:
             "AZURE_OPENAI_API_VERSION": "2024-06-01",
         },
     )
-    @patch("vanna.integrations.azureopenai.llm.AzureOpenAI")
+    @patch("openai.AzureOpenAI")
     def test_init_from_environment(self, mock_azure_openai):
         """Test initialization from environment variables."""
         service = AzureOpenAILlmService()
@@ -102,7 +102,7 @@ class TestAzureOpenAILlmServiceInitialization:
         assert call_kwargs["api_version"] == "2024-06-01"
         assert call_kwargs["api_key"] == "env-key"
 
-    @patch("vanna.integrations.azureopenai.llm.AzureOpenAI")
+    @patch("openai.AzureOpenAI")
     def test_init_missing_model_raises(self, mock_azure_openai):
         """Test that missing model parameter raises ValueError."""
         with pytest.raises(ValueError, match="model parameter.*is required"):
@@ -111,7 +111,7 @@ class TestAzureOpenAILlmServiceInitialization:
                 azure_endpoint="https://test.openai.azure.com",
             )
 
-    @patch("vanna.integrations.azureopenai.llm.AzureOpenAI")
+    @patch("openai.AzureOpenAI")
     def test_init_missing_endpoint_raises(self, mock_azure_openai):
         """Test that missing azure_endpoint raises ValueError."""
         with pytest.raises(ValueError, match="azure_endpoint is required"):
@@ -120,7 +120,7 @@ class TestAzureOpenAILlmServiceInitialization:
                 api_key="test-key",
             )
 
-    @patch("vanna.integrations.azureopenai.llm.AzureOpenAI")
+    @patch("openai.AzureOpenAI")
     def test_init_missing_auth_raises(self, mock_azure_openai):
         """Test that missing authentication raises ValueError."""
         with pytest.raises(ValueError, match="Authentication required"):
@@ -129,7 +129,7 @@ class TestAzureOpenAILlmServiceInitialization:
                 azure_endpoint="https://test.openai.azure.com",
             )
 
-    @patch("vanna.integrations.azureopenai.llm.AzureOpenAI")
+    @patch("openai.AzureOpenAI")
     def test_init_with_azure_ad_token_provider(self, mock_azure_openai):
         """Test initialization with Azure AD token provider."""
         mock_token_provider = Mock()
@@ -144,7 +144,7 @@ class TestAzureOpenAILlmServiceInitialization:
         assert call_kwargs["azure_ad_token_provider"] == mock_token_provider
         assert "api_key" not in call_kwargs
 
-    @patch("vanna.integrations.azureopenai.llm.AzureOpenAI")
+    @patch("openai.AzureOpenAI")
     def test_init_default_api_version(self, mock_azure_openai):
         """Test that default API version is used when not specified."""
         service = AzureOpenAILlmService(
@@ -161,7 +161,7 @@ class TestAzureOpenAILlmServiceInitialization:
 class TestAzureOpenAILlmServicePayloadBuilding:
     """Test payload building for API requests."""
 
-    @patch("vanna.integrations.azureopenai.llm.AzureOpenAI")
+    @patch("openai.AzureOpenAI")
     def test_build_payload_includes_temperature_for_standard_model(
         self, mock_azure_openai
     ):
@@ -187,7 +187,7 @@ class TestAzureOpenAILlmServicePayloadBuilding:
         assert payload["temperature"] == 0.8
         assert payload["model"] == "gpt-4o"
 
-    @patch("vanna.integrations.azureopenai.llm.AzureOpenAI")
+    @patch("openai.AzureOpenAI")
     def test_build_payload_excludes_temperature_for_reasoning_model(
         self, mock_azure_openai
     ):
@@ -212,7 +212,7 @@ class TestAzureOpenAILlmServicePayloadBuilding:
         assert "temperature" not in payload
         assert payload["model"] == "gpt-5"
 
-    @patch("vanna.integrations.azureopenai.llm.AzureOpenAI")
+    @patch("openai.AzureOpenAI")
     def test_build_payload_with_system_prompt(self, mock_azure_openai):
         """Test that system prompt is added to messages."""
         from vanna.core.llm import LlmRequest, LlmMessage
@@ -236,7 +236,7 @@ class TestAzureOpenAILlmServicePayloadBuilding:
         assert payload["messages"][0]["role"] == "system"
         assert payload["messages"][0]["content"] == "You are a helpful assistant."
 
-    @patch("vanna.integrations.azureopenai.llm.AzureOpenAI")
+    @patch("openai.AzureOpenAI")
     def test_build_payload_with_tools(self, mock_azure_openai):
         """Test that tools are properly formatted in payload."""
         from vanna.core.llm import LlmRequest, LlmMessage

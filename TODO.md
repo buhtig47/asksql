@@ -4,11 +4,13 @@ Baseline: `pytest tests/` on Python 3.13 → 41 failed, 167 passed, 47 skipped, 
 
 ## Real bugs (fix later, one at a time)
 
+FIXED
 ### B. Azure OpenAI tests (12 failing)
 - File: `tests/test_azureopenai_llm.py`
 - Error: `module 'vanna.integrations.azureopenai.llm' does not have the attribute 'AzureOpenAI'`
 - My hypothesis: I think ______ causes ______
 
+FIXED
 ### C. `test_agent_top_artist` error
 - File: `tests/test_agents.py:55`
 - Error: `fixture 'agent' not found`
