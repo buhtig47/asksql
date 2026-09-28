@@ -125,7 +125,12 @@ class LegacyVannaAdapter(ToolRegistry, AgentMemory):
         sql_runner = LegacySqlRunner(self.vn)
 
         # Register the RunSqlTool with user and admin access
-        run_sql_tool = RunSqlTool(sql_runner)
+        run_sql_tool = RunSqlTool(
+            sql_runner,
+            allow_write_sql=bool(
+                (getattr(self.vn, "config", None) or {}).get("allow_write_sql", False)
+            ),
+        )
         self.register_local_tool(run_sql_tool, access_groups=["user", "admin"])
 
         # Register memory tools using the internal _agent_memory instance

@@ -13,6 +13,7 @@ from vanna.components import (
 from vanna.capabilities.sql_runner import SqlRunner, RunSqlToolArgs
 from vanna.capabilities.file_system import FileSystem
 from vanna.integrations.local import LocalFileSystem
+from vanna.utils.sql_safety import ensure_read_only_sql
 
 
 class RunSqlTool(Tool[RunSqlToolArgs]):
@@ -24,6 +25,7 @@ class RunSqlTool(Tool[RunSqlToolArgs]):
         file_system: Optional[FileSystem] = None,
         custom_tool_name: Optional[str] = None,
         custom_tool_description: Optional[str] = None,
+        allow_write_sql: bool = False,
     ):
         """Initialize the tool with a SqlRunner implementation.
 
@@ -32,8 +34,11 @@ class RunSqlTool(Tool[RunSqlToolArgs]):
             file_system: FileSystem implementation for saving results (defaults to LocalFileSystem)
             custom_tool_name: Optional custom name for the tool (overrides default "run_sql")
             custom_tool_description: Optional custom description for the tool (overrides default description)
+            allow_write_sql: Allow non-SELECT statements (INSERT, UPDATE, DDL, ...). Off by default
+                because the SQL comes from the LLM and can be steered by prompt injection.
         """
         self.sql_runner = sql_runner
+        self.allow_write_sql = allow_write_sql
         self.file_system = file_system or LocalFileSystem()
         self._custom_name = custom_tool_name
         self._custom_description = custom_tool_description
@@ -56,6 +61,9 @@ class RunSqlTool(Tool[RunSqlToolArgs]):
     async def execute(self, context: ToolContext, args: RunSqlToolArgs) -> ToolResult:
         """Execute a SQL query using the injected SqlRunner."""
         try:
+            if not self.allow_write_sql:
+                ensure_read_only_sql(args.sql)
+
             # Use the injected SqlRunner to execute the query
             df = await self.sql_runner.run_sql(args, context)
 

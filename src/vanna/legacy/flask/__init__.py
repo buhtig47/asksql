@@ -534,6 +534,8 @@ class VannaFlaskAPI:
                         }
                     )
 
+                # sql comes from the LLM or the /update_sql endpoint, never trust it (vanna-ai/vanna#1078)
+                vn._ensure_llm_sql_allowed(sql)
                 df = vn.run_sql(sql=sql)
 
                 self.cache.set(id=id, field="df", value=df)

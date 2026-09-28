@@ -67,6 +67,7 @@ import sqlparse
 from ..exceptions import DependencyError, ImproperlyConfigured, ValidationError
 from ..types import TrainingPlan, TrainingPlanItem
 from ..utils import validate_config_path
+from ...utils.sql_safety import ensure_read_only_sql
 from .safe_exec import exec_plotly_code
 
 
@@ -84,6 +85,12 @@ class VannaBase(ABC):
 
     def log(self, message: str, title: str = "Info"):
         print(f"{title}: {message}")
+
+    def _ensure_llm_sql_allowed(self, sql: str) -> None:
+        """Block non-read-only LLM-generated SQL unless config allow_write_sql=True (vanna-ai/vanna#1078)."""
+        config = getattr(self, "config", None) or {}
+        if not config.get("allow_write_sql", False):
+            ensure_read_only_sql(sql)
 
     def _response_language(self) -> str:
         if self.language is None:
@@ -146,6 +153,7 @@ class VannaBase(ABC):
 
                 try:
                     self.log(title="Running Intermediate SQL", message=intermediate_sql)
+                    self._ensure_llm_sql_allowed(intermediate_sql)
                     df = self.run_sql(intermediate_sql)
 
                     prompt = self.get_sql_prompt(
@@ -1751,6 +1759,7 @@ class VannaBase(ABC):
                 return sql, None, None
 
         try:
+            self._ensure_llm_sql_allowed(sql)
             df = self.run_sql(sql)
 
             if print_results:
