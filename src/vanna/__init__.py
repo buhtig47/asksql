@@ -6,7 +6,7 @@ with tool execution, conversation management, and user scoping.
 """
 
 # Version information
-__version__ = "2.1.0"  # keep in sync with pyproject.toml
+__version__ = "2.2.0"  # keep in sync with pyproject.toml
 
 # Import core framework components
 from .core import (

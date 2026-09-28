@@ -2,7 +2,7 @@
 
 Changes in this community-maintained fork, relative to the last upstream Vanna release (2.0.2).
 
-## Unreleased
+## 2.2.0 — 2026-09-28
 
 ### Security
 - **FastAPI server no longer shares credentials with every origin.** The default CORS config was `allow_origins=["*"]` with `allow_credentials=True`, so any website a logged-in user visited could query the agent with their cookies and read the answers. Credentials are now only allowed when you list explicit origins (`config={"cors": {"allow_origins": [...]}}`). The server warns if you combine `*` with credentials yourself. Same-origin use (the built-in chat page) is unaffected. The Flask server was already safe.
@@ -13,8 +13,7 @@ Changes in this community-maintained fork, relative to the last upstream Vanna r
 - **Optional human approval before saving to memory** (vanna-ai/vanna#1103). With `SaveQuestionToolArgsTool(require_approval=True)` (or legacy config `{"require_memory_approval": True}` for `LegacyVannaAdapter`), the LLM can only propose a memory: the user gets a "👍 Save to memory" button, and nothing is saved until they click it. This stops SQL that ran but returned wrong numbers from being saved and reused. Off by default. For the legacy `vn.ask()` API, use `auto_train=False` to the same effect.
 
 ### Fixed
-- **Queries starting with `WITH` (CTEs) or a comment returned no data.** `RunSqlTool`, `SqliteRunner` and `PostgresRunner` decided whether a query returns rows by checking if its first word was `SELECT`. So `WITH … SELECT …` and `-- comment
-SELECT …` were treated as writes, and the LLM got "1 row(s) affected" instead of the results. The runners now use the DB-API `cursor.description`, and the tool parses the statement.
+- **Queries starting with `WITH` (CTEs) or a comment returned no data.** `RunSqlTool`, `SqliteRunner` and `PostgresRunner` decided whether a query returns rows by checking if its first word was `SELECT`. So `WITH … SELECT …` and queries with a leading `-- comment` were treated as writes, and the LLM got "1 row(s) affected" instead of the results. The runners now use the DB-API `cursor.description`, and the tool parses the statement.
 - `RunSqlTool` reported "1 row(s) affected" for every write. It now reports the real count.
 
 ## 2.1.0 — 2026-09-28 (first asksql release)
