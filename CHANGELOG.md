@@ -2,7 +2,7 @@
 
 Changes in this community-maintained fork, relative to the last upstream Vanna release (2.0.2).
 
-## 2.1.0 — first asksql release (unreleased)
+## 2.1.0 — 2026-09-28 (first asksql release)
 
 ### Security
 - **LLM-generated SQL is now read-only by default** (vanna-ai/vanna#1078). Only a single `SELECT` / `WITH … SELECT` (plus `SHOW` / `DESCRIBE`) is executed. Writes, DDL, stacked queries, writes hidden in CTEs, `SELECT … INTO`, and known file/shell helpers (`DBMS_*`, `UTL_*`, `pg_read_file`, `load_extension`, `xp_cmdshell`, DuckDB `read_csv`, …) are rejected. Applies to legacy `ask()`, the legacy Flask server, the legacy adapter and the v2 `RunSqlTool`.
