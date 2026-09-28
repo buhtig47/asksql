@@ -2,6 +2,11 @@
 
 Changes in this community-maintained fork, relative to the last upstream Vanna release (2.0.2).
 
+## Unreleased
+
+### Added
+- **Optional human approval before saving to memory** (vanna-ai/vanna#1103). With `SaveQuestionToolArgsTool(require_approval=True)` (or legacy config `{"require_memory_approval": True}` for `LegacyVannaAdapter`), the LLM can only propose a memory: the user gets a "👍 Save to memory" button, and nothing is saved until they click it. This stops SQL that ran but returned wrong numbers from being saved and reused. Off by default. For the legacy `vn.ask()` API, use `auto_train=False` to the same effect.
+
 ## 2.1.0 — 2026-09-28 (first asksql release)
 
 ### Security

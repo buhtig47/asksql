@@ -7,7 +7,9 @@ The tools access AgentMemory via ToolContext, which is populated by the Agent.
 """
 
 import logging
-from typing import Any, Dict, List, Optional, Type
+import uuid
+from collections import OrderedDict
+from typing import Any, Dict, List, Optional, Tuple, Type
 from pydantic import BaseModel, Field
 
 logger = logging.getLogger(__name__)
@@ -19,7 +21,13 @@ from vanna.components import (
     UiComponent,
     StatusBarUpdateComponent,
     CardComponent,
+    ButtonComponent,
+    SimpleTextComponent,
 )
+
+# Chat command the "Save to memory" button sends (handled by DefaultWorkflowHandler)
+SAVE_MEMORY_COMMAND = "/save_memory"
+MAX_PENDING_APPROVALS = 1000
 
 
 class SaveQuestionToolArgsParams(BaseModel):
@@ -58,7 +66,66 @@ class SaveTextMemoryParams(BaseModel):
 
 
 class SaveQuestionToolArgsTool(Tool[SaveQuestionToolArgsParams]):
-    """Tool for saving successful question-tool-argument combinations."""
+    """Tool for saving successful question-tool-argument combinations.
+
+    Args:
+        require_approval: If True, the LLM can only *propose* a memory. The user
+            sees a "Save to memory" button and the pattern is saved only when
+            they click it. Prevents SQL that ran but returned wrong data from
+            being saved and reused (vanna-ai/vanna#1103).
+    """
+
+    def __init__(self, require_approval: bool = False):
+        self.require_approval = require_approval
+        # pending_id -> (user_id, args); bounded so it can't grow forever
+        self._pending: "OrderedDict[str, Tuple[str, SaveQuestionToolArgsParams]]" = (
+            OrderedDict()
+        )
+
+    async def approve(self, pending_id: str, context: ToolContext) -> bool:
+        """Save a pending memory. Only the user it was proposed to can approve it, once."""
+        pending = self._pending.get(pending_id)
+        if pending is None or pending[0] != context.user.id:
+            return False
+        del self._pending[pending_id]
+        _, args = pending
+        await context.agent_memory.save_tool_usage(
+            question=args.question,
+            tool_name=args.tool_name,
+            args=args.args,
+            context=context,
+            success=True,
+        )
+        return True
+
+    def _propose(
+        self, context: ToolContext, args: SaveQuestionToolArgsParams
+    ) -> ToolResult:
+        pending_id = uuid.uuid4().hex[:12]
+        self._pending[pending_id] = (context.user.id, args)
+        while len(self._pending) > MAX_PENDING_APPROVALS:
+            self._pending.popitem(last=False)
+
+        command = f"{SAVE_MEMORY_COMMAND} {pending_id}"
+        return ToolResult(
+            success=True,
+            result_for_llm=(
+                "Not saved yet: the user must approve saving this pattern to memory. "
+                "A 'Save to memory' button has been shown to them. Do not call this tool again for it."
+            ),
+            ui_component=UiComponent(
+                rich_component=ButtonComponent(
+                    label="Save to memory",
+                    action=command,
+                    variant="secondary",
+                    size="small",
+                    icon="👍",
+                ),
+                simple_component=SimpleTextComponent(
+                    text=f"If this answer is correct, send `{command}` to save it to memory."
+                ),
+            ),
+        )
 
     @property
     def name(self) -> str:
@@ -77,6 +144,9 @@ class SaveQuestionToolArgsTool(Tool[SaveQuestionToolArgsParams]):
         self, context: ToolContext, args: SaveQuestionToolArgsParams
     ) -> ToolResult:
         """Save the tool usage pattern to agent memory."""
+        if self.require_approval:
+            return self._propose(context, args)
+
         try:
             await context.agent_memory.save_tool_usage(
                 question=args.question,

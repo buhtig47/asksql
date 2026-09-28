@@ -158,6 +158,10 @@ class DefaultWorkflowHandler(WorkflowHandler):
             memory_id = message.strip()[8:].strip()  # Extract ID after "/delete "
             return await self._delete_memory(agent, user, conversation, memory_id)
 
+        if message.strip().lower().startswith("/save_memory "):
+            pending_id = message.strip()[len("/save_memory ") :].strip()
+            return await self._approve_memory(agent, user, conversation, pending_id)
+
         # Don't handle other messages, pass to LLM
         return WorkflowResult(should_skip_llm=False)
 
@@ -679,6 +683,53 @@ class DefaultWorkflowHandler(WorkflowHandler):
                     )
                 ],
             )
+
+    async def _approve_memory(
+        self,
+        agent: "Agent",
+        user: "User",
+        conversation: "Conversation",
+        pending_id: str,
+    ) -> WorkflowResult:
+        """Save a memory the user approved with the "Save to memory" button (vanna-ai/vanna#1103)."""
+        from vanna.core.tool import ToolContext
+        from vanna.tools.agent_memory import SaveQuestionToolArgsTool
+
+        def reply(content: str) -> WorkflowResult:
+            return WorkflowResult(
+                should_skip_llm=True,
+                components=[
+                    UiComponent(
+                        rich_component=RichTextComponent(
+                            content=content, markdown=True
+                        ),
+                        simple_component=None,
+                    )
+                ],
+            )
+
+        tool = await agent.tool_registry.get_tool("save_question_tool_args")
+        # register_local_tool(..., access_groups=[...]) wraps the tool
+        tool = getattr(tool, "_wrapped_tool", tool)
+        if not isinstance(tool, SaveQuestionToolArgsTool) or not getattr(
+            agent, "agent_memory", None
+        ):
+            return reply("# ⚠️ Nothing to save\n\nMemory saving is not configured.")
+
+        context = ToolContext(
+            user=user,
+            conversation_id=conversation.id,
+            request_id=str(uuid.uuid4()),
+            agent_memory=agent.agent_memory,
+        )
+        if await tool.approve(pending_id, context):
+            return reply(
+                "# ✅ Saved to memory\n\nSimilar questions will reuse this query."
+            )
+        return reply(
+            "# ❌ Nothing to save\n\nThis save request has expired, was already saved, "
+            "or belongs to another user."
+        )
 
     async def _delete_memory(
         self, agent: "Agent", user: "User", conversation: "Conversation", memory_id: str

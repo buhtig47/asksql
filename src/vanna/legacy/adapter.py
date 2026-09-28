@@ -125,17 +125,18 @@ class LegacyVannaAdapter(ToolRegistry, AgentMemory):
         sql_runner = LegacySqlRunner(self.vn)
 
         # Register the RunSqlTool with user and admin access
+        config = getattr(self.vn, "config", None) or {}
         run_sql_tool = RunSqlTool(
             sql_runner,
-            allow_write_sql=bool(
-                (getattr(self.vn, "config", None) or {}).get("allow_write_sql", False)
-            ),
+            allow_write_sql=bool(config.get("allow_write_sql", False)),
         )
         self.register_local_tool(run_sql_tool, access_groups=["user", "admin"])
 
         # Register memory tools using the internal _agent_memory instance
         # SaveQuestionToolArgsTool - for saving question-tool-args patterns (admin only)
-        save_memory_tool = SaveQuestionToolArgsTool()
+        save_memory_tool = SaveQuestionToolArgsTool(
+            require_approval=bool(config.get("require_memory_approval", False))
+        )
         self.register_local_tool(save_memory_tool, access_groups=["admin"])
 
         # SearchSavedCorrectToolUsesTool - for searching similar patterns (user and admin)

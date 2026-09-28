@@ -22,6 +22,11 @@ Now: 0 failed, 225 passed, 76 skipped (optional packages / API keys missing → 
 - [x] PyPI pending publisher added; GitHub release v2.1.0 created and published to PyPI
 - [x] Enable GitHub Issues on the fork
 
+## Bugs / features
+- [x] #1103 optional human approval before saving to memory (`require_approval=True`)
+- [ ] #1105 too much process data in chat page
+- [ ] #997 FastAPI server missing endpoints
+
 ## Launch prep
 - [x] MIGRATING_FROM_VANNA.md (verified: wrong uninstall order breaks install → force-reinstall fixes)
 - [x] README badges + migration guide link
